@@ -41,19 +41,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: [static]
-    name: ${{ matrix.goos }} ${{ matrix.goarch }} build
+    name: ${{ matrix.build_arch }}
     strategy:
       matrix:
         include:
-          - {build_arch: linux_arm64}
-          - {build_arch: linux_amd64}
-          ######
           - {build_arch: win32}
           - {build_arch: win64}
           - {build_arch: darwin_amd64}
           - {build_arch: darwin_arm64}
           - {build_arch: linux_i386}
-          ######
+          - {build_arch: linux_amd64}
+          - {build_arch: linux_arm64}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v3
