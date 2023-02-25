@@ -1,2 +1,4 @@
-*.pickle
-*.tar.gz
+*
+!/.gitignore
+!/convert.py
+!/Makefile
