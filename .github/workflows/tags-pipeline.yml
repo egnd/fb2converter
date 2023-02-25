@@ -24,7 +24,7 @@ jobs:
     - name: Generate static
       if: steps.restore-static.outputs.cache-hit != 'true'
       run: |
-        apt-get -y install --no-install-recommends python3-pip
+        sudo apt-get -y install --no-install-recommends python3-pip
         pip3 install nltk
         cd .ci
         make static/dictionaries
@@ -40,6 +40,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    needs: [static]
     name: ${{ matrix.goos }} ${{ matrix.goarch }} build
     strategy:
       matrix:
@@ -52,7 +53,7 @@ jobs:
       with:
         go-version: 1.20
     - name: Install cmake and libs
-      run: apt-get -y install --no-install-recommends cmake libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libdbus-1-dev
+      run: sudo apt-get -y install --no-install-recommends cmake libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libdbus-1-dev
     - uses: actions/cache@v3
       with:
         path: |
