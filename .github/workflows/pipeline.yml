@@ -13,6 +13,8 @@ jobs:
     name: prepare static data
     steps:
     - uses: actions/checkout@v3
+    - id: curdate
+      run: echo "::set-output name=date::$(date +'%Y-%m')"
     - name: Restore static
       id: restore-static
       uses: actions/cache@v3
@@ -20,7 +22,7 @@ jobs:
         path: |
           static/dictionaries
           static/sentences
-        key: cache-static
+        key: static-${{ steps.curdate.outputs.date }}-${{ hashFiles('.ci/Makefile') }}
     - name: Generate static
       if: steps.restore-static.outputs.cache-hit != 'true'
       run: |
@@ -30,7 +32,6 @@ jobs:
         make static/dictionaries
         make static/sentences
     - name: Cache static
-      id: save-static
       uses: actions/cache/save@v3
       with:
         path: |
@@ -58,13 +59,18 @@ jobs:
       with:
         go-version: '1.20'
     - run: sudo apt-get -y install --no-install-recommends cmake libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libdbus-1-dev
+    - id: curdate
+      run: echo "::set-output name=date::$(date +'%Y-%m')"
     - uses: actions/cache@v3
-      id: restore-static
       with:
         path: |
           static/dictionaries
           static/sentences
-        key: cache-static
+        key: static-${{ steps.curdate.outputs.date }}-${{ hashFiles('.ci/Makefile') }}
+        restore-keys: |
+          static-${{ steps.curdate.outputs.date }}-
+          static-
+        fail-on-cache-miss: true
     - run: echo "" > cmake/sign.sh # @TODO: hack for artifact signing
     - name: build
       env:
