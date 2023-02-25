@@ -3,11 +3,10 @@ name: New tag
 on:
   push:
     branches:
-    - master
-    - ghub-pipelines
+    - master # check build without release
   create:
     tags:
-    - v*
+    - v* # both build and release
 
 jobs:
 
