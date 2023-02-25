@@ -61,15 +61,14 @@ jobs:
           static/sentences
         key: cache-static
     - name: build
-      if: steps.restore-static.outputs.cache-hit != 'true'
       env:
         ARCH_INSTALLS: ${{ matrix.build_arch }}
       run: |
         echo "" > cmake/sign.sh
-        ./build-release.sh
+        bash build-release.sh
         ls -lah
     - name: upload release
       uses: softprops/action-gh-release@v1
-      if: steps.restore-static.outputs.cache-hit != 'true' && startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: fb2c_*.zip
