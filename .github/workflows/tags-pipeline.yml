@@ -52,15 +52,16 @@ jobs:
     - uses: actions/setup-go@v3
       with:
         go-version: 1.20
-    - name: Install cmake and libs
-      run: sudo apt-get -y install --no-install-recommends cmake libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libdbus-1-dev
+    - run: sudo apt-get -y install --no-install-recommends cmake libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libdbus-1-dev
     - uses: actions/cache@v3
+      id: restore-static
       with:
         path: |
           static/dictionaries
           static/sentences
         key: cache-static
     - name: build
+      if: steps.restore-static.outputs.cache-hit != 'true'
       env:
         ARCH_INSTALLS: ${{ matrix.build_arch }}
       run: |
@@ -69,6 +70,6 @@ jobs:
         ls -lah
     - name: upload release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+      if: steps.restore-static.outputs.cache-hit != 'true' && startsWith(github.ref, 'refs/tags/')
       with:
         files: fb2c_*.zip
