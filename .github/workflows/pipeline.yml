@@ -2,9 +2,9 @@ name: New tag
 
 on:
   push:
-  # create: # @TODO:
-  #   tags:
-  #     - v*
+  create:
+    tags:
+      - v*
 
 jobs:
 
@@ -60,13 +60,11 @@ jobs:
           static/dictionaries
           static/sentences
         key: cache-static
+    - run: echo "" > cmake/sign.sh # @TODO: hack for artifact signing
     - name: build
       env:
         ARCH_INSTALLS: ${{ matrix.build_arch }}
-      run: |
-        echo "" > cmake/sign.sh
-        bash build-release.sh
-        ls -lah
+      run: bash build-release.sh
     - name: upload release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
