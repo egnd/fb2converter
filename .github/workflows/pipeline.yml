@@ -46,11 +46,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - {build_arch: win32}
-          - {build_arch: win64}
+          # - {build_arch: win32}
+          # - {build_arch: win64}
           - {build_arch: darwin_amd64}
           - {build_arch: darwin_arm64}
-          - {build_arch: linux_i386}
+          # - {build_arch: linux_i386}
           - {build_arch: linux_amd64}
           - {build_arch: linux_arm64}
     steps:
