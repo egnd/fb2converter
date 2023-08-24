@@ -1,4 +1,4 @@
-name: New tag
+name: Handle updates
 
 on:
   push:
@@ -9,36 +9,36 @@ on:
 
 jobs:
 
-  static:
-    runs-on: ubuntu-latest
-    name: prepare static data
-    steps:
-    - uses: actions/checkout@v3
-    - id: curdate
-      run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
-    - name: Restore static
-      id: restore-static
-      uses: actions/cache@v3
-      with:
-        path: |
-          static/dictionaries
-          static/sentences
-        key: static-${{ steps.curdate.outputs.date }}-${{ hashFiles('.ci/Makefile') }}
-    - name: Generate static
-      if: steps.restore-static.outputs.cache-hit != 'true'
-      run: |
-        sudo apt-get -y install --no-install-recommends python3-pip
-        pip3 install nltk
-        cd .ci
-        make static/dictionaries
-        make static/sentences
-    - name: Cache static
-      uses: actions/cache/save@v3
-      with:
-        path: |
-          static/dictionaries
-          static/sentences
-        key: ${{ steps.restore-static.outputs.cache-primary-key }}
+  # static:
+  #   runs-on: ubuntu-latest
+  #   name: prepare static data
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - id: curdate
+  #     run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
+  #   - name: Restore static
+  #     id: restore-static
+  #     uses: actions/cache@v3
+  #     with:
+  #       path: |
+  #         static/dictionaries
+  #         static/sentences
+  #       key: static-${{ steps.curdate.outputs.date }}-${{ hashFiles('.ci/Makefile') }}
+  #   - name: Generate static
+  #     if: steps.restore-static.outputs.cache-hit != 'true'
+  #     run: |
+  #       sudo apt-get -y install --no-install-recommends python3-pip
+  #       pip3 install nltk
+  #       cd .ci
+  #       make static/dictionaries
+  #       make static/sentences
+  #   - name: Cache static
+  #     uses: actions/cache/save@v3
+  #     with:
+  #       path: |
+  #         static/dictionaries
+  #         static/sentences
+  #       key: ${{ steps.restore-static.outputs.cache-primary-key }}
 
   build:
     runs-on: ubuntu-latest
